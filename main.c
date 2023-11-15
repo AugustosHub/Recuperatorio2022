@@ -27,7 +27,7 @@ int identificador = 1;
 void Menu(){
     puts("Biblioteca: \n\n");
     puts("Menú: ");
-    puts("1. Agregar libro");
+    puts("1. Agregar/Modificar libro");
     puts("2. Ver libros");
     puts("3. Buscar libro");
     puts("4. Vender libro");
@@ -128,6 +128,95 @@ void agregarLibro(){
     system("pause");
 }
 
+void modificarLibro(){
+    struct Libros *actual = Inicio;
+
+    char nombreNuevo[50],editorialNueva[50];
+    int op,ID,cantidadNueva;
+
+    if(!vacia(Inicio)){
+        printf("Ingrese el ID del libro que desea encontrar: ");
+        scanf("%d",&ID);
+        if(existeID(ID)){
+            while (actual->ID != ID && actual != NULL) {
+                actual = actual->sig;
+            }
+
+            system("cls");
+            puts("Libro encontrado: \n");
+            printf("Nombre: %s\n", actual->nombre);
+            printf("Editorial: %s\n", actual->editorial);
+            printf("Cantidad: %d\n", actual->cant);
+            printf("ID: %d\n", actual->ID);
+            printf("---------------------------\n\n");
+
+            puts("¿Qué desea modificar?\n1. Nombre del libro\n2. Nombre de la editorial\n3. Cantidad de libros");
+            puts("------------------------------------");
+            printf("Elegir opción: ");
+            scanf("%d",&op);
+            while(op>3 || op<1){
+                puts("------------------------------------");
+                puts("¡Opción no valida, intente de nuevo!");
+                puts("------------------------------------");
+                printf("Elegir opción: ");
+                scanf("%d",&op);
+            }
+            switch(op){
+                case 1:
+                    system("cls");
+                    fflush(stdin);
+                    printf("Ingrese el nuevo nombre del libro: ");
+                    gets(nombreNuevo);
+
+                    strcpy(actual->nombre,nombreNuevo);
+                    system("cls");
+                    puts("-------------------------------------");
+                    puts("¡Nombre del libro cambiado con éxito!");
+                    puts("-------------------------------------");
+                    system("pause");
+                    break;
+                case 2:
+                    system("cls");
+                    fflush(stdin);
+                    printf("Ingrese el nuevo nombre de la editorial: ");
+                    gets(editorialNueva);
+
+                    strcpy(actual->editorial,editorialNueva);
+                    system("cls");
+                    puts("-------------------------------------------");
+                    puts("¡Nombre de la editorial cambiado con éxito!");
+                    puts("-------------------------------------------");
+                    system("pause");
+                    break;
+                case 3:
+                    system("cls");
+                    printf("Ingrese la nueva cantidad de libros: ");
+                    scanf("%d",&cantidadNueva);
+
+                    actual->cant = cantidadNueva;
+                    system("cls");
+                    puts("-------------------");
+                    puts("¡Stock actualizado!");
+                    puts("-------------------");
+                    system("pause");
+                    break;
+            }
+        }else{
+            system("cls");
+            puts("-----------------------------------------------");
+            printf("¡No se encontró un libro con el ID '%d'!\n",ID);
+            puts("-----------------------------------------------");
+            system("pause");
+        }
+    }else{
+        system("cls");
+        puts("---------------------");
+        puts("¡La lista está vacia!");
+        puts("---------------------");
+        system("pause");
+    }
+}
+
 void verLibros(){
     struct Libros *actual = Inicio;
 
@@ -160,10 +249,7 @@ void buscarLibro(){
         printf("Ingrese el ID del libro que desea encontrar: ");
         scanf("%d",&ID);
         if(existeID(ID)){
-            while (actual != NULL) {
-                if (actual->ID == ID) {
-                    break;
-                }
+            while (actual->ID != ID && actual!=NULL) {
                 actual = actual->sig;
             }
 
@@ -176,6 +262,7 @@ void buscarLibro(){
             printf("---------------------------\n");
             system("pause");
         }else{
+            system("cls");
             puts("---------------------");
             printf("¡No se encontró un libro con el ID '%d'!\n",ID);
             puts("---------------------");
@@ -225,6 +312,7 @@ void venderLibro(){
             }
 
             actual->cant = actual->cant - cant;
+            system("cls");
             puts("---------------------------------------------");
             printf("¡Libro '%s' vendido con éxito!\n",actual->nombre);
             puts("---------------------------------------------");
@@ -241,9 +329,10 @@ void venderLibro(){
                 eliminarLibro(ID);
             }
         }else{
-            puts("---------------------");
+            system("cls");
+            puts("-----------------------------------------------");
             printf("¡No se encontró un libro con el ID '%d'!\n",ID);
-            puts("---------------------");
+            puts("-----------------------------------------------");
             system("pause");
         }
     }else{
@@ -304,6 +393,7 @@ void duplicarLibro(){
                         nuevo->sig = Inicio;
                         Inicio = nuevo;
 
+                        system("cls");
                         puts("----------------------------------------");
                         puts("¡Libro insertado en el inicio con éxito!");
                         puts("----------------------------------------");
@@ -324,6 +414,8 @@ void duplicarLibro(){
 
                         anterior->sig = nuevo;
                         nuevo->sig = NULL;
+
+                        system("cls");
                         puts("---------------------------------------");
                         puts("¡Libro insertado en el final con éxito!");
                         puts("---------------------------------------");
@@ -347,6 +439,7 @@ void duplicarLibro(){
                         anterior->sig = nuevo;
                         nuevo->sig = NULL;
 
+                        system("cls");
                         puts("------------------------------------------------------------------------------");
                         puts("¡El libro ya había sido duplicado en el inicio ahora se insertará en el final!");
                         puts("------------------------------------------------------------------------------");
@@ -368,14 +461,16 @@ void duplicarLibro(){
                         nuevo->sig = Inicio;
                         Inicio = nuevo;
 
+                        system("cls");
                         puts("------------------------------------------------------------------------------");
                         puts("¡El libro ya había sido duplicado en el final ahora se insertará en el inicio!");
                         puts("------------------------------------------------------------------------------");
             }
         }else{
-            puts("---------------------");
+            system("cls");
+            puts("-----------------------------------------------");
             printf("¡No se encontró un libro con el ID '%d'!\n",ID);
-            puts("---------------------");
+            puts("-----------------------------------------------");
             system("pause");
         }
     }else{
@@ -388,7 +483,7 @@ void duplicarLibro(){
 
 int main()
 {
-    int menu,salir;
+    int menu,salir,case1;
 
     setlocale(LC_ALL, "");
     srand(time(NULL));
@@ -406,15 +501,35 @@ int main()
         }
         switch(menu){
         case 1:
-            if(cantidadLibros(Inicio)<=10){
-                system("cls");
-                agregarLibro();
-            }else{
-                system("cls");
-                puts("-----------------------------------------");
-                puts("¡Se ha excedido el límite de libros (10)!");
-                puts("-----------------------------------------");
-                system("pause");
+            system("cls");
+            puts("¿Qué desea hacer?\n1.Agregar Libro\n2.Modificar libro");
+            puts("------------------------------------");
+            printf("Elegir opción: ");
+            scanf("%d",&case1);
+            while(case1>2 || case1<1){
+                puts("------------------------------------");
+                puts("¡Opción no valida, intente de nuevo!");
+                puts("------------------------------------");
+                printf("Elegir opción: ");
+                scanf("%d",&case1);
+            }
+            switch(case1){
+                case 1:
+                    if(cantidadLibros(Inicio)<=10){
+                        system("cls");
+                        agregarLibro();
+                    }else{
+                        system("cls");
+                        puts("-----------------------------------------");
+                        puts("¡Se ha excedido el límite de libros (10)!");
+                        puts("-----------------------------------------");
+                        system("pause");
+                    }
+                    break;
+                case 2:
+                    system("cls");
+                    modificarLibro();
+                    break;
             }
             break;
         case 2:
