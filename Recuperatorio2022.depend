@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1700085448 source:c:\users\user\desktop\facultad\recuperatorio2022\main.c
+	<stdio.h>
+	<stdlib.h>
+	<wchar.h>
+	<locale.h>
+	<time.h>
+	<unistd.h>
+	<string.h>
+	<conio.h>
+	<ctype.h>
+	<windows.h>
+
